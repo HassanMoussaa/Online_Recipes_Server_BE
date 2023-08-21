@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\ShoppingListController;
+use App\Http\Controllers\MealCalendarController;
 
 
 /*
@@ -48,5 +50,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/shopping-list/add', [ShoppingListController::class, 'addToShoppingList']);
     Route::get('/shopping-list/recipes', [ShoppingListController::class, 'getShoppingListRecipes']);
+
+    Route::post('/meal-calendar/add', [MealCalendarController::class, 'addPlannedMeal']);
+    Route::get('/meal-calendar/planned-meals', [MealCalendarController::class, 'getPlannedMeals']);
+
 
 });
