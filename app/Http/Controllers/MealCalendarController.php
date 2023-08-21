@@ -26,8 +26,10 @@ class MealCalendarController extends Controller
     public function getPlannedMeals()
     {
         $user = Auth::user();
-        $plannedMeals = $user->mealCalendar;
+        $plannedMeals = MealCalendar::with('recipe')->where('user_id', $user->id)->get();
 
         return response()->json(['planned_meals' => $plannedMeals]);
     }
+
+
 }

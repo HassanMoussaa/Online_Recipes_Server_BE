@@ -15,7 +15,7 @@ class MealCalendar extends Model
 
     public function recipe()
     {
-        // Placeholder relationship for recipe associated with this meal calendar event
+        return $this->belongsTo(Recipe::class);
     }
 
     // Add other placeholder relationships as needed
