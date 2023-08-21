@@ -81,15 +81,20 @@ class RecipeController extends Controller
     {
         $query = $request->input('query');
 
-        $recipes = Recipe::where('name', 'like', "%$query%")
-            ->orWhere('cuisine', 'like', "%$query%")
-            ->orWhereHas('ingredients', function ($ingredientQuery) use ($query) {
-                $ingredientQuery->where('name', 'like', "%$query%");
-            })
+        $recipes = Recipe::where(function ($recipeQuery) use ($query) {
+            $recipeQuery->where('name', 'like', "%$query%")
+                ->orWhere('cuisine', 'like', "%$query%")
+                ->orWhereHas('ingredients', function ($ingredientQuery) use ($query) {
+                    $ingredientQuery->where('name', 'like', "%$query%");
+                });
+        })
+            ->with('ingredients')
             ->get();
 
         return response()->json(['recipes' => $recipes]);
     }
+
+
 
 
 
