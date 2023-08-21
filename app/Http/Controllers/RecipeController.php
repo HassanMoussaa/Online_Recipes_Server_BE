@@ -19,7 +19,7 @@ class RecipeController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|string',
                 'cuisine' => 'required|string',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'ingredients' => 'required|array',
                 'ingredients.*' => 'required|string',
             ]);
@@ -28,9 +28,11 @@ class RecipeController extends Controller
 
             $image_url = null;
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $image_path = Storage::putFile('recipe_images', $image);
-                $image_url = Storage::url($image_path);
+                $file_extension = $request->image->getClientOriginalExtension();
+                $file_name = time() . '.' . $file_extension;
+                $path = 'images';
+                $request->image->move($path, $file_name);
+                $image_url = "http://127.0.0.1:8000/images/" . $file_name;
             }
 
             $recipe = Auth::user()->recipes()->create([
@@ -39,9 +41,9 @@ class RecipeController extends Controller
                 'image_url' => $image_url,
             ]);
 
-            $recipeID = $recipe->id; // Get the ID of the newly created recipe
+            $recipeID = $recipe->id;
 
-            // Create ingredients separately and associate them with the recipe
+
             foreach ($validatedData['ingredients'] as $ingredientName) {
                 $ingredient = Ingredient::create([
                     'name' => $ingredientName,
@@ -56,6 +58,7 @@ class RecipeController extends Controller
             return response()->json(['message' => 'Error creating recipe', 'error' => $e->getMessage()], 500);
         }
     }
+
 
 
     public function getUserRecipes()
