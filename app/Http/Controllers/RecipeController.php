@@ -65,20 +65,22 @@ class RecipeController extends Controller
     {
         $user = Auth::user();
 
-        $userRecipes = $user->recipes()->with('ingredients')->get();
+        $userRecipes = $user->recipes()->with(['ingredients', 'user'])->get();
 
         return response()->json(['recipes' => $userRecipes]);
     }
+
 
     public function getAllRecipesExceptUser()
     {
         $user = Auth::user();
 
-        $recipes = Recipe::where('user_id', '!=', $user->id)->with('ingredients')->get();
+        $recipes = Recipe::where('user_id', '!=', $user->id)
+            ->with(['ingredients', 'user'])
+            ->get();
 
         return response()->json(['recipes' => $recipes]);
     }
-
 
 
     public function searchRecipes(Request $request)
