@@ -127,4 +127,27 @@ class RecipeController extends Controller
 
         return response()->json(['liked' => $isLiked]);
     }
+
+    public function addComment(Recipe $recipe, Request $request)
+    {
+        $user = Auth::user();
+
+        $commentText = $request->input('comment');
+
+        $comment = $recipe->comments()->create([
+            'user_id' => $user->id,
+            'comment_text' => $commentText,
+        ]);
+
+        return response()->json(['message' => 'Comment added successfully', 'comment' => $comment]);
+    }
+
+
+
+
+
+
+
+
+
 }
