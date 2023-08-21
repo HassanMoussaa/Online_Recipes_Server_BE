@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
@@ -99,24 +100,39 @@ class RecipeController extends Controller
 
 
 
-    public function likeRecipe(Recipe $recipe)
+    public function likeRecipe(Request $request, $recipeId)
     {
         $user = Auth::user();
 
-        if (!$user->likes->contains($recipe)) {
-            $user->likes()->attach($recipe);
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
+
+
+        $alreadyLiked = $user->likes->where('recipe_id', $recipeId)->count() > 0;
+
+        if (!$alreadyLiked) {
+
+            $like = new Like(['user_id' => $user->id, 'recipe_id' => $recipeId]);
+            $like->save();
+
             return response()->json(['message' => 'Recipe liked successfully']);
         }
 
         return response()->json(['message' => 'Recipe already liked'], 400);
     }
 
+
+
     public function unlikeRecipe(Recipe $recipe)
     {
         $user = Auth::user();
 
-        if ($user->likes->contains($recipe)) {
-            $user->likes()->detach($recipe);
+
+        $like = $user->likes()->where('recipe_id', $recipe->id)->first();
+
+        if ($like) {
+            $like->delete();
             return response()->json(['message' => 'Recipe like removed successfully']);
         }
 

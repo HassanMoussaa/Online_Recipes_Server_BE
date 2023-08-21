@@ -8,16 +8,13 @@ class Like extends Model
 {
     protected $fillable = ['user_id', 'recipe_id'];
 
-    // Placeholder relationships: Add actual relationships later in controllers and APIs
     public function user()
     {
-        // Placeholder relationship for user who liked the recipe
+        return $this->belongsTo(User::class);
     }
 
     public function recipe()
     {
-        // Placeholder relationship for liked recipe
+        return $this->belongsTo(Recipe::class);
     }
-
-    // Add other placeholder relationships as needed
 }

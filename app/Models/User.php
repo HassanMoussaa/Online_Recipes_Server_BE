@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -66,5 +67,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Recipe::class);
     }
-
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class);
+    }
 }
