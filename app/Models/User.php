@@ -22,7 +22,6 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'user_types_id',
     ];
 
     /**
@@ -64,14 +63,5 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    // added for cart and user realationship 
-    public function cart()
-    {
-        return $this->hasOne(Cart::class);
-    }
 
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
 }

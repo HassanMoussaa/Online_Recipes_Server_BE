@@ -61,23 +61,23 @@ class AuthController extends Controller
 
 
 
-        try {
-            $cart = Cart::create([
-                'user_id' => $user->id,
-            ]);
+        // try {
+        //     $cart = Cart::create([
+        //         'user_id' => $user->id,
+        //     ]);
 
-            return response()->json([
-                'message' => 'User created successfully',
-                'user' => $user,
-                'cart' => $cart
-            ]);
-        } catch (\Exception $e) {
+        //     return response()->json([
+        //         'message' => 'User created successfully',
+        //         'user' => $user,
+        //         'cart' => $cart
+        //     ]);
+        // } catch (\Exception $e) {
 
-            return response()->json([
-                'message' => 'Error occurred during registration',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        //     return response()->json([
+        //         'message' => 'Error occurred during registration',
+        //         'error' => $e->getMessage(),
+        //     ], 500);
+        // }
 
 
     }
