@@ -74,4 +74,57 @@ class RecipeController extends Controller
     }
 
 
+
+    public function searchRecipes(Request $request)
+    {
+        $query = $request->input('query');
+
+
+        $recipes = Recipe::where('name', 'like', "%$query%")
+            ->orWhere('cuisine', 'like', "%$query%")
+            ->orWhereHas('ingredients', function ($query) use ($query) {
+                $query->where('name', 'like', "%$query%");
+            })
+            ->get();
+
+        return response()->json(['recipes' => $recipes]);
+    }
+
+
+
+
+    public function likeRecipe(Recipe $recipe)
+    {
+        $user = Auth::user();
+
+        if (!$user->likes->contains($recipe)) {
+            $user->likes()->attach($recipe);
+            return response()->json(['message' => 'Recipe liked successfully']);
+        }
+
+        return response()->json(['message' => 'Recipe already liked'], 400);
+    }
+
+    public function unlikeRecipe(Recipe $recipe)
+    {
+        $user = Auth::user();
+
+        if ($user->likes->contains($recipe)) {
+            $user->likes()->detach($recipe);
+            return response()->json(['message' => 'Recipe like removed successfully']);
+        }
+
+        return response()->json(['message' => 'Recipe not liked'], 400);
+    }
+
+
+
+    public function checkRecipeLiked(Recipe $recipe)
+    {
+        $user = Auth::user();
+
+        $isLiked = $user->likes->contains($recipe);
+
+        return response()->json(['liked' => $isLiked]);
+    }
 }
