@@ -41,4 +41,12 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/recipes/{recipe}/like', [RecipeController::class, 'unlikeRecipe']);
     Route::get('/recipes/{recipe}/liked', [RecipeController::class, 'checkRecipeLiked']);
 
+    Route::post('/recipes/{recipe}/comments', [RecipeController::class, 'addComment']);
+    Route::get('/recipes/{recipe}/comments', [RecipeController::class, 'getComments']);
+
+
+
+    Route::post('/shopping-list/add', [ShoppingListController::class, 'addToShoppingList']);
+    Route::get('/shopping-list/recipes', [ShoppingListController::class, 'getShoppingListRecipes']);
+
 });
