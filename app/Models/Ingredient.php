@@ -8,11 +8,8 @@ class Ingredient extends Model
 {
     protected $fillable = ['recipe_id', 'name'];
 
-
-
-
-    public function recipes()
+    public function recipe()
     {
-        return $this->belongsToMany(Recipe::class);
+        return $this->belongsTo(Recipe::class);
     }
 }

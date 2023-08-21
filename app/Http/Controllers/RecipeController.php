@@ -11,17 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class RecipeController extends Controller
 {
+
     public function create(Request $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string',
-            'cuisine' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'ingredients' => 'required|array',
-            'ingredients.*' => 'required|string',
-        ]);
-
         try {
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'cuisine' => 'required|string',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
+                'ingredients' => 'required|array',
+                'ingredients.*' => 'required|string',
+            ]);
+
             DB::beginTransaction();
 
             $image_url = null;
@@ -37,29 +38,22 @@ class RecipeController extends Controller
                 'image_url' => $image_url,
             ]);
 
-            foreach ($validatedData['ingredients'] as $ingredientName) {
-                $ingredient = Ingredient::firstOrCreate(['name' => $ingredientName]);
-                $recipe->ingredients()->attach($ingredient->id);
-            }
+            $recipeID = $recipe->id; // Get the ID of the newly created recipe
 
+            // Create ingredients separately and associate them with the recipe
+            foreach ($validatedData['ingredients'] as $ingredientName) {
+                $ingredient = Ingredient::create([
+                    'name' => $ingredientName,
+                    'recipe_id' => $recipeID,
+                ]);
+            }
             DB::commit();
 
             return response()->json(['message' => 'Recipe created successfully', 'recipe' => $recipe], 201);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['message' => 'Error creating recipe'], 500);
+            return response()->json(['message' => 'Error creating recipe', 'error' => $e->getMessage()], 500);
         }
-    }
-
-
-    public function getAllRecipesExceptUser()
-    {
-        $user = Auth::user();
-
-
-        $recipes = Recipe::where('user_id', '!=', $user->id)->get();
-
-        return response()->json(['recipes' => $recipes]);
     }
 
 
@@ -67,10 +61,18 @@ class RecipeController extends Controller
     {
         $user = Auth::user();
 
-
-        $userRecipes = $user->recipes;
+        $userRecipes = $user->recipes()->with('ingredients')->get();
 
         return response()->json(['recipes' => $userRecipes]);
+    }
+
+    public function getAllRecipesExceptUser()
+    {
+        $user = Auth::user();
+
+        $recipes = Recipe::where('user_id', '!=', $user->id)->with('ingredients')->get();
+
+        return response()->json(['recipes' => $recipes]);
     }
 
 
@@ -79,11 +81,10 @@ class RecipeController extends Controller
     {
         $query = $request->input('query');
 
-
         $recipes = Recipe::where('name', 'like', "%$query%")
             ->orWhere('cuisine', 'like', "%$query%")
-            ->orWhereHas('ingredients', function ($query) use ($query) {
-                $query->where('name', 'like', "%$query%");
+            ->orWhereHas('ingredients', function ($ingredientQuery) use ($query) {
+                $ingredientQuery->where('name', 'like', "%$query%");
             })
             ->get();
 

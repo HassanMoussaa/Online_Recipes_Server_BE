@@ -65,7 +65,7 @@ class AuthController extends Controller
         try {
             $shoppingList = ShoppingList::create([
                 'user_id' => $user->id,
-                'name' => 'My Shopping List',
+
             ]);
 
             return response()->json([
