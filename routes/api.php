@@ -4,8 +4,8 @@ use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\FavoritesController;
+use App\Http\Controllers\RecipeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -31,5 +31,7 @@ Route::controller(AuthController::class)->group(function () {
 
 
 Route::middleware('auth:api')->group(function () {
-
+    Route::post('/recipes/create', [RecipeController::class, 'create']);
+    Route::get('/recipes', [RecipeController::class, 'getAllRecipesExceptUser']);
+    Route::get('/recipes/user', [RecipeController::class, 'getUserRecipes']);
 });

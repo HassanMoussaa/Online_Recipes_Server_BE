@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ingredient extends Model
 {
-    protected $fillable = ['user_id', 'name'];
+    protected $fillable = ['recipe_id', 'name'];
+
+
 
 
     public function recipes()
     {
-        return $this->belongsToMany(Recipe::class, 'recipe_ingredients');
+        return $this->belongsToMany(Recipe::class);
     }
-
-
 }
