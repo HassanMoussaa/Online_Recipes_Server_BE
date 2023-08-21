@@ -3,20 +3,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnsToIngredientsTable extends Migration
+class AddMissingColumnsToIngredients extends Migration
 {
     public function up()
     {
         Schema::table('ingredients', function (Blueprint $table) {
+            $table->foreignId('recipe_id')->constrained();
             $table->string('name');
-            $table->foreignId('user_id')->constrained();
         });
     }
 
     public function down()
     {
         Schema::table('ingredients', function (Blueprint $table) {
-            $table->dropColumn(['name', 'user_id']);
+            $table->dropColumn(['recipe_id', 'name']);
         });
     }
 }
