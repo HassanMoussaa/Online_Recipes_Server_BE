@@ -19,12 +19,19 @@ class ShoppingListController extends Controller
         $user = Auth::user();
         $recipeId = $request->input('recipe_id');
 
-
         $shoppingListId = ShoppingList::where('user_id', $user->id)->value('id');
 
         if (!$shoppingListId) {
-
             return response()->json(['message' => 'Shopping list not found'], 404);
+        }
+
+
+        $existingItem = ShoppingListItem::where('shopping_list_id', $shoppingListId)
+            ->where('recipe_id', $recipeId)
+            ->first();
+
+        if ($existingItem) {
+            return response()->json(['message' => 'Recipe is already in the shopping list'], 200);
         }
 
         $shoppingListItem = ShoppingListItem::create([
@@ -34,6 +41,7 @@ class ShoppingListController extends Controller
 
         return response()->json(['message' => 'Recipe added to shopping list']);
     }
+
 
     public function getShoppingListRecipes()
     {
