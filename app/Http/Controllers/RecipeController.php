@@ -142,7 +142,12 @@ class RecipeController extends Controller
         return response()->json(['message' => 'Comment added successfully', 'comment' => $comment]);
     }
 
+    public function getComments(Recipe $recipe)
+    {
+        $comments = $recipe->comments()->with('user')->get();
 
+        return response()->json(['comments' => $comments]);
+    }
 
 
 
