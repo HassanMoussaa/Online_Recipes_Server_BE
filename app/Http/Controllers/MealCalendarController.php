@@ -15,6 +15,16 @@ class MealCalendarController extends Controller
         $date = $request->input('date');
 
 
+        $existingMeal = MealCalendar::where([
+            'user_id' => $user->id,
+            'recipe_id' => $recipeId,
+            'date' => $date,
+        ])->first();
+
+        if ($existingMeal) {
+            return response()->json(['message' => 'Meal is already planned for this date'], 400);
+        }
+
         $plannedMeal = MealCalendar::updateOrCreate(
             ['user_id' => $user->id, 'recipe_id' => $recipeId, 'date' => $date],
             []
@@ -22,6 +32,7 @@ class MealCalendarController extends Controller
 
         return response()->json(['message' => 'Planned meal added successfully']);
     }
+
 
     public function getPlannedMeals()
     {
