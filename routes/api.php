@@ -40,7 +40,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/recipes/search', [RecipeController::class, 'searchRecipes']);
 
     Route::post('/recipes/{recipe}/like', [RecipeController::class, 'likeRecipe']);
-    Route::delete('/recipes/{recipe}/like', [RecipeController::class, 'unlikeRecipe']);
+    Route::post('/recipes/{recipe}/unlike', [RecipeController::class, 'unlikeRecipe']);
     Route::get('/recipes/{recipe}/liked', [RecipeController::class, 'checkRecipeLiked']);
 
     Route::post('/recipes/{recipe}/comments', [RecipeController::class, 'addComment']);

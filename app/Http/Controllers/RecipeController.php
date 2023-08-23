@@ -67,9 +67,12 @@ class RecipeController extends Controller
 
         $userRecipes = $user->recipes()->with(['ingredients', 'user'])->get();
 
+        foreach ($userRecipes as $recipe) {
+            $recipe->is_liked = $user->likes->contains('recipe_id', $recipe->id);
+        }
+
         return response()->json(['recipes' => $userRecipes]);
     }
-
 
     public function getAllRecipesExceptUser()
     {
@@ -78,6 +81,10 @@ class RecipeController extends Controller
         $recipes = Recipe::where('user_id', '!=', $user->id)
             ->with(['ingredients', 'user'])
             ->get();
+
+        foreach ($recipes as $recipe) {
+            $recipe->is_liked = $user->likes->contains('recipe_id', $recipe->id);
+        }
 
         return response()->json(['recipes' => $recipes]);
     }
@@ -150,10 +157,14 @@ class RecipeController extends Controller
     {
         $user = Auth::user();
 
-        $isLiked = $user->likes->contains($recipe);
+        $isLiked = $user->likes->contains(function ($like) use ($recipe) {
+            return $like->recipe_id === $recipe->id;
+        });
 
         return response()->json(['liked' => $isLiked]);
     }
+
+
 
     public function addComment(Recipe $recipe, Request $request)
     {
