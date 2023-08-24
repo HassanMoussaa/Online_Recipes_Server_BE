@@ -50,6 +50,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/shopping-list/add', [ShoppingListController::class, 'addToShoppingList']);
     Route::get('/shopping-list/recipes', [ShoppingListController::class, 'getShoppingListRecipes']);
+    Route::post('/shopping-list/remove', [ShoppingListController::class, 'removeFromShoppingList']);
+
 
     Route::post('/meal-calendar/add', [MealCalendarController::class, 'addPlannedMeal']);
     Route::get('/meal-calendar/planned-meals', [MealCalendarController::class, 'getPlannedMeals']);

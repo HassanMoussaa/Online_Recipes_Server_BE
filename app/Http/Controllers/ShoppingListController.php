@@ -67,4 +67,25 @@ class ShoppingListController extends Controller
     }
 
 
+
+
+
+    public function removeFromShoppingList(Request $request)
+    {
+        $recipeId = $request->input('recipe_id');
+        $userId = auth()->user()->id;
+
+
+        $shoppingListId = ShoppingList::where('user_id', $userId)->value('id');
+
+
+        ShoppingListItem::where('shopping_list_id', $shoppingListId)
+            ->where('recipe_id', $recipeId)
+            ->delete();
+
+        return response()->json(['message' => 'Recipe removed from shopping list']);
+    }
+
+
+
 }

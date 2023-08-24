@@ -11,10 +11,10 @@ class CreateMealCalendarTable extends Migration
     {
         Schema::create('meal_calendar', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained(); // Adding foreign key reference to Users table
+            $table->foreignId('user_id')->constrained(); 
             $table->date('date');
-            $table->foreignId('recipe_id')->constrained(); // Adding foreign key reference to Recipes table
-            // Add other meal calendar-related fields
+            $table->foreignId('recipe_id')->constrained(); 
+         
             $table->timestamps();
         });
     }
